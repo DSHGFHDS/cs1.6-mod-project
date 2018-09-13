@@ -1,0 +1,27 @@
+﻿<body bgcolor="Black" text="White" link="Black" vlink="Black" alink="Black">
+<hr color=#58FA58>
+
+<font color=#F5F5F5 size='3'>
+按M打开游戏菜单进行各种操作.<br>
+<hr color=#58FA58>
+<font color=#0101DF size='5'>
+人类:<br>
+<font color=#0101DF size='3'>
+不同的人类角色拥有不同的专署技能.<br>
+人类拥有强大的火力武器.<br>
+人类必须生存到最后一刻.<br>
+<hr color=#58FA58>
+<font color=#FF0000 size='5'>
+僵尸:<br>
+<font color=#FF0000 size='3'>
+死后无限复活.<br>
+不同的类型拥有不同的专署技能.<br>
+死后复活是以幽灵状态出现,无法被看到碰到伤害到,在人类看不见的地方按下攻击键复活成实体.<br>
+在幽灵状态下按E可以迅速寻找到附近的人类.<br>
+复活后有一定的机率成为BOSS僵尸,BOSS无法在僵尸菜单中选择.<br>
+每次攻击人类,都会获得和伤害成正比的金钱奖励.<br>
+<hr color=#58FA58>
+<font color=#DF7401 size='3'>
+ZombieRiot会不断的更新,常来zombieriot吧,关注下更新吧!
+
+<hr color=#58FA58>

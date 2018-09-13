@@ -1,0 +1,367 @@
+1.00
+ZR重置版本号正式版发布.
+
+1.01
+主插件:
+修复CheckRound()重叠执行问题
+增加连接提示
+增加4个接口:
+//获取当前亮度
+native zr_get_light(light[], len)
+//设置当前亮度
+native zr_set_light(const light[])
+//获取当前天气
+native zr_get_weather()
+//设置当前天气
+native zr_set_weather(weather)
+
+zrweapon:
+增加地上武器停留时间(时间到了自动消失).
+
+增加新僵尸类型:腐蚀者
+增加僵尸毒素系统和毒素解毒剂道具
+优化代码
+
+1.02
+修复一定机率开局炸服BUG
+增加管理员菜单项:重置游戏
+增加介绍菜单
+
+1.03
+修改zrweapon
+调整僵尸属性
+修复尸体消失过快问题
+修改每局更换队伍系统(人类胜利继续当人类)
+zrsemclip模块更新:幽灵可以穿过任何实体(门,玻璃,人等等)
+
+增加新接口:
+//获取上一局获胜的队伍
+native zr_get_wonteam()
+
+//给某玩家创建一个尸体
+native zr_spawn_body(iPlayer)
+
+//Pre事件:Velocity的prethink和postthink检查,详细见主代码(打断可解决某些情况下无法设置玩家的velocity)
+forward zr_hook_velocitycheck(iPlayer)
+
+//Pre事件:死后创建尸体时触发(打断后可以阻止尸体产生)
+forward zr_hook_spawnbody(iPlayer)
+
+//我在zrsemclip_amxx.dll里做了fuser1的特征码判断,判断正确的话,实体就能够穿透任何东西.会占用到pev_fuser1
+stock SetEntitySemiClip(iEntity, bool:value)
+{
+	if(value) set_pev(iEntity, pev_fuser1, 363578912.0)
+	else set_pev(iEntity, pev_fuser1, 0.0)
+}
+
+增加新的BOSS僵尸 Zrbeast
+
+1.04
+修复了1.03所带来的BUG,去掉SetEntitySemiClip和zrsemclip的穿透特征码
+
+1.05(只更新了插件包和源代码)
+改进了百分比机率计算方式
+修改了zrsemclip:幽灵只能穿透特定实体(不会再掉进电梯什么里面了)
+开发包加入zrsemclip工程包
+
+1.06(更新了插件包和源码包)
+删除了遗漏的废弃代码;
+整改了支持ZBOT代码结构(在settingmenu.ini文件里开启和关闭);
+修复了人类胜利后开局模型不正常问题;
+修复了时间HUD与实际数据不相对问题;
+修复了进入游戏闪屏问题;
+优化了部分浪费效率的代码;
+幽灵在倒数其间也可以按E传送至人类位置;
+添加了玩家死后复活成僵尸的命令:
+zr_respawn_to_zombie 1		;人类死后是否复活成僵尸(不会影响下一局的队伍平衡)
+
+增加新接口:
+
+//Pre事件:改变屏幕颜色事件(改变屏幕颜色时触发,主要是人类和僵尸的夜视开启和关闭,被闪光弹闪中)
+forward zr_hook_screenfade(iPlayer, R, B, G, density)
+
+//Post事件:M菜单新增子选项触发事件(用zr_register_menu注册的菜单会在这里触发,MenuID是它所返回的ID号)
+forward zr_addmenu_event(iPlayer, MenuID)
+
+//给M菜单里面注册一个子选项(menuname为选项名称,注册后会返回一个菜单子项ID,在zr_addmenu_event里会用得上)
+native zr_register_menu(const menuname[])
+
+修改了zrsemiclip_amxx.dll使幽灵不能穿透一些特殊实体(像dust2 AB区上的箱子)
+
+改进了zrweapon对BOT的支援
+
+1.07(更新了插件包和源码包)
+
+修复了延迟高时僵尸杀死人类右上角HUD不正常问题
+
+修复了选择菜单不正常问题
+
+删除了在ZR主插件里的菜单内容
+
+重新编写了人类类型选择和僵尸类型选择和物品购买的触发方式为命令触发
+
+增加子插件ZrMenu利用菜单来触发人类类型选择和僵尸类型选择和物品购买的命令
+
+以下两接口移至为子插件ZrMenu的接口,并在zrmenu.inc内:
+//Post事件:M菜单新增子选项触发事件(用zr_register_menu注册的菜单会在这里触发,MenuID是它所返回的ID号)
+forward zr_addmenu_event(iPlayer, MenuID)
+
+//给M菜单里面注册一个子选项(menuname为选项名称,注册后会返回一个菜单子项ID,在zr_addmenu_event里会用得上)
+native zr_register_menu(const menuname[])
+
+删除了爆兽头颅的掉枪功能
+
+增加两个新接口:
+
+//设置玩家选择的僵尸的ID
+native zr_set_nextzombie_id(iPlayer, Type)
+
+//设置玩家选择的人类的ID
+native zr_set_nexthuman_id(iPlayer, Type)
+
+
+1.08(更新了插件包和源码包)
+
+抛弃cshack_amxx.dll和zrsemiclip_amxx.dll
+编写了zombieriot_amxx.dll
+
+修改了zr_set_user_anim,使用这函数的子插件如恶魔之子的技能,都修改了,以前使用了这函数的同学注意了
+//播放玩家的身体模型动作(已经通过zombieriot_amxx.dll重写了玩家动作,可以完美使用)
+native zr_set_user_anim(iPlayer, Float:Time, Anim, GaitAnim = -1)
+/*
+	iPlayer为玩家索引
+	Float:Time为播放动作的时间
+	Anim为上半身动作
+	GaitAnim为下半身动作(不填,或填小于0的数,都意味着不播放下半身动作)
+*/
+
+zombieriot_amxx.dll处理了僵尸的身体动作播放(僵尸跑步时的上半身动作是run的动作,而不是ref_aim_knif的动作了)
+
+修改了天气系统文件的加载方式,如果存在一个文件如ambience_de_dust.ini这样ambience_地图名.ini的文件,天气系统就会载入该文件,而不是载入ambience.ini,这样就可以对应的地图拥有对应的天气了.
+
+1.09(更新了插件包,源码包和资源包)
+
+修复了zombieriot.sma的BUG(小雨天气无法清理前一局的雾, 高延迟仍然出现的右上角僵尸杀敌信息错误)
+修复了ZrButcher.sma的陷阱使人类永远卡住的问题
+修改了ZrGaussRifle.sma
+
+增加新接口:
+
+//复活僵尸(只对死亡的僵尸有效,time是复活的时间,此接口会触发zr_hook_zombiespawn,如果你把zr_hook_zombiespawn打断了,这接口也会没效果)
+native zr_spawn_zombie(iPlayer, Float:time)
+
+//Pre事件:僵尸准备复活的时候触发(就是僵尸死亡后出现复活进度条的时候触发,与zr_hook_zombiespawn不同,打断后zr_hook_zombiespawn也不会触发了)
+forward zr_hook_zombiesetspawn(iPlayer)
+
+加上了幽灵穿透的实体标志设置
+// zombieriot_amxx.dll通过对实体的pev_iuser2设置标志,来区分幽灵是否能穿透这实体(占用了iuser2,要小心使用)
+stock SetPenetrationToGhost(iEntity, bool:value)
+{
+	if(value)
+	{
+	set_pev(iEntity, pev_iuser2, SEMICLIPKEY)
+	return
+	}
+	
+	set_pev(iEntity, pev_iuser2, 0)
+}
+
+重写的整个玩家速度系统(由于以前的速度系统是移植ZP的,没办法处理各个子插件间速度的影响):
+玩家的速度不再是连续不段(think)的设置了,而是采取了单次设置的形式
+删除了接口zr_hook_maxspeed
+增加了新接口:
+//重置该玩家的最大移动速度
+native zr_resetmaxspeed(iPlayer)
+玩家的速度会受武器重量或是否开镜的影响(以前刷think的办法不会受武器影响)
+所有有关速度的子插件都做了相应的修改,如果有同学用过以前的速度接口来修改速度,可能要做大整改了,比较辛苦(参照子插件修改速度的办法).
+
+模型方面:
+修复了zr_venom.mdl和zr_wildfire.mdl没有区分受伤区域的问题
+
+1.1(更新了插件包和源码包)
+
+优化了代码
+修复了在某些版本中出现切枪使速度变慢最后无法移动的问题
+增加了判断是否开启支援BOT的接口并在子插件中做好连接(以前只考虑到只使用ZBOT的情况.现在关闭后使用第三方BOT就不会出问题了,但目前不支持ZBOT和第三方BOT混用)
+修复了鬼火和回血插件在未开局的时候出现SPR的问题
+删除了在zombieriot.inc里写上的stock SetPenetrationToGhost,直接写进了zombieriot_amxx.dll里,接口在zrconst.inc内,功能不变
+修复了队伍平衡BUG
+
+增加新接口:
+//判断是否开启了支援ZBOT(settingmenu.ini里设置)
+native zr_zbot_supported()
+
+//获取玩家是否是临时转换队伍(人类死后如果复活成僵尸,那就是临时地转换队伍,到下一局会转换回人类)
+native bool:zr_get_snapchange(iPlayer)
+
+//设置玩家是否是临时转换队伍
+native zr_set_snapchange(iPlayer, bool:value)
+
+1.11(更新了代码包和插件包)
+删除僵尸是否隐藏准星命令zr_zombie_hidecross,改成在settingmenu.ini下的 隐藏僵尸准星 = 是
+修复了利用控制台命令成为BOSS的BUG(估计还没人发现)
+修复了憎恶屠夫在AMXMODX1.8.2出现的控制台maxspeed报错问题
+
+为人类和僵尸增加了隐藏角色设置,隐藏角色无法选择,也不会随机变成,只能利用插件来调用(为第三方插件提供便利)
+human.ini和zombie.ini增加多了选项(还增加了人类和僵尸的隐藏角色各一个,试试写插件开启吧)
+
+主插件增加新接口:
+
+//获取该僵尸ID是否为隐藏角色
+native bool:zr_is_zombie_hidden(Type)
+
+//获取该人类ID是否为隐藏角色
+native bool:zr_is_human_hidden(Type)
+
+//获取cstrike\addons\amxmodx\configs下的某个文件中某一行的内容
+native zr_get_linedata(const filename[], const line, linedata[], const len)
+/*例子(获取zrmenu.ini中的第5行内容)
+static linedata[1024]
+zr_get_linedata("zrmenu.ini", 5, linedata, charsmax(linedata))
+client_print(0, print_chat, "zrmenu.ini第5行内容是:%s", linedata)
+*/
+
+//修改cstrike\addons\amxmodx\configs下的某个文件中某一行的内容
+native zr_set_linedata(const filename[], const line, const linedata[])
+/*例子(修改zrmenu.ini中的第8行内容)
+zr_set_linedata("zrmenu.ini", 8, "我去!")
+*/
+
+变更了的代码有:
+zombieriot.sma(隐藏角色,修复BUG, 准星命令)
+ZrMenu.sma(隐藏角色)
+ZrButcher.sma(修复BUG)
+ZrBuyBoss.sma(隐藏角色)
+
+1.12(更新了代码和插件包)
+修复了高斯枪偶然控制台报错的BUG
+修复了玩家使用止痛药或病毒解毒剂时死亡掉在地上变烟雾和闪光的BUG
+修复了zr_set_linedata无效的问题
+修复了僵尸和人类类型ID与序号不相同时出现的严重性问题(源于自己的疏忽,现在都修复好了)
+优化了判断玩家连接触发
+优化了几乎所有代码中的特殊效果
+优化了消息发送的代码
+增加了内容缺失,插件自动关闭的代码
+增加新接口:
+//注册临时僵尸类型,与在cstrike\addons\amxmodx\configs\zombie.ini下添加新僵尸不同,这种办法类似ZP,添加的僵尸ID由zombieriot自动分配,必须在plugin_precache()注册
+//(名称, 介绍, 人物模型, 手臂模型, 生命, 速度, 重量, 轻击速度, 重击速度, 轻击范围, 重击范围, 攻击伤害倍数, 抗击退, 是否隐藏, 类型)
+//返回僵尸ID
+native zr_register_zombie(const name[], const info[], const model[], const vmodel[], Float:health, Float:maxspeed, Float:gravity, Float:attackspeed1, Float:attackspeed2, Float:attackrange1, Float:attackrange2, Float:damage, Float:painfree, hidden, boss)
+
+//注册临时人类类型
+//(名称, 介绍, 人物模型, 生命, 速度, 重量, 抗击退, 是否隐藏)
+//返回人类ID
+native zr_register_human(const name[], const info[], const model[], Float:health, Float:maxspeed, Float:gravity, Float:painfree, hidden)
+
+1.13
+修复了命令购买BUG(死亡购买或非对应队伍购买)
+优化了zrMenu的写法,减小了代码容量(感谢jap)
+
+1.14
+修复了开局有僵尸复活的情况
+释放了一堆多余的HL缓存
+修复了死亡动作不能正常播放的问题
+
+增加了逃生模式(要zr_开头的专用地图开启)
+
+zr_地图的触发实体:
+zr_barrier_a 障碍物 a级生命 func_breakable
+zr_barrier_b 障碍物 b级生命 func_breakable
+zr_barrier_c 障碍物 c级生命 func_breakable
+zr_barrier_d 障碍物 d级生命 func_breakable
+zr_barrier_... 障碍物 x级生命 func_breakable
+zr_ladder 僵尸专用攀爬点 func_wall
+zr_section 地图完成度 trigger_multiple
+zr_start 僵尸开时复活触发点(相当于开了安全门) trigger_multiple
+zr_end 终点 trigger_multiple
+
+修改了zombieriot_amxx.dll,使幽灵能够透视可穿透的物体
+增加些接口:
+
+//判断是否是逃生模式(zr_开头的地图)
+native bool:zr_is_escapemode()
+
+//获取逃生模式下,完成点的最大数量(就是过了那里就显示完成了百分多少的点)
+native zr_get_maxsection()
+
+//Pre事件:ZR的client_print和彩色print会触发
+forward zr_hook_printword(iPlayer, const Word[])
+
+//Pre事件:成为人类触发事件(只要用了zr_set_user_human就会触发,在主源码里面变人类也是用了zr_set_user_human)
+forward zr_being_human_pre(iPlayer)
+
+//Pre事件:成为僵尸触发事件(只要用了zr_set_user_zombie就会触发,在主源码里面变僵尸也是用了zr_set_user_zombie)
+forward zr_being_zombie_pre(iPlayer)
+
+//Pre事件:重置玩家速度的时候触发
+forward zr_hook_resetmaxspeed(iPlayer)
+
+//调整了击退的计算和增加新命令
+zr_knock_threshold 2.0 //击退阀值(数值越大,击退的影响越大)
+
+//增加新命令
+zr_glow_effect 1 //幽灵观察玩家的光圈效果
+
+zrmenu增加了特殊道具购买项
+
+增加了新的BOSS类型:飓风毒魔
+
+删除了止痛药插件ZrPainpills
+
+增加了新的人类技能和模组
+
+变更的代码:
+好多好多,几乎都变了
+
+1.15
+修复了一些简单的BUG:
+中了屠夫的陷阱无法开枪
+突击卫士重复发枪
+资源包补上了两个漏缺的C4炸药音效
+移除了僵尸雷
+
+重新编写了ShowHuman,效果更好,效率更高
+
+重新修订了一些数据,调整游戏平衡
+
+给重甲兵加了不被震掉枪的效果
+
+把高斯枪重写了并移入特殊装备栏中
+
+优化了ZrMenu的代码
+
+增加新命令:zr_player_modelindex 1		;是否设置玩家真实的身体模型击中部位
+出现炸服问题可以尝试关闭
+
+增加新的逃跑模式专用实体:
+zr_wall 只有僵尸能穿过的实体 func_wall
+
+增加M32榴弹发射器
+
+增加新接口:
+
+//设置雾(density的范围是0-9)
+native zr_set_fog(R, G, B, density)
+
+//Pre事件:ZR里的hudmessage会触发
+forward zr_hook_hudmessage(iPlayer, const HudMessage[], Channel)
+
+//Pre事件:ZR里对玩家设置环境亮度是触发,像夜视仪和闪电
+forward zr_hook_lightstyle(iPlayer, const light[])
+
+//Pre事件:ZR里设置雾时触发
+forward zr_hook_fog(R, G, B, density)
+
+1.16
+重写了ZrButcher
+修复了遥控C4不爆炸的问题
+去除了暗影鬼魅，代码移到了附加代码中
+增加了新僵尸类型：血腥玛丽(原创技能，与CSOL无关)
+
+1.17
+更新了代码内容以及修复BUG
+调节游戏平衡,让僵尸不那么逆天,人类不那么难活.
+
+1.18
+经过服务器的长期测试,修复大部分BUG
+添加一些新道具以及修改了数据
